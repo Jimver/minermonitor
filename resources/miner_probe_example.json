@@ -1,16 +1,4 @@
-#![feature(proc_macro_hygiene, decl_macro)]
-
-#[macro_use] extern crate rocket;
-
-pub mod backend;
-
-
-#[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
-}
-fn main() {
-    let data = r#"{
+{
   "stats": [
     {
       "STATUS": [
@@ -462,8 +450,4 @@ fn main() {
     }
   ],
   "id": 1
-}
-"#;
-    let des = backend::probe::probe_result::deserialize(data.to_string());
-    rocket::ignite().mount("/", routes![index]).launch();
 }
