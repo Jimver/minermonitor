@@ -2,102 +2,127 @@
 Result of probing a miner
 */
 use serde::{Serialize, Deserialize};
+use core::borrow::Borrow;
 
-pub fn deserialize(string: String) {
-    let deserialized: RootInterface = serde_json::from_str(&string).unwrap();
+pub fn deserialize(string: String) -> RootInterface {
+    serde_json::from_str(&string).unwrap()
 }
 
-#[derive(Serialize, Deserialize)]
-struct Devs {
-    #[serde(rename = "STATUS")]
-    _status: Vec<Status>,
-    #[serde(rename = "DEVS")]
-    _devs: Vec<Devs1>,
+pub fn get_short_stats(root: &RootInterface) -> StatsShort {
+    StatsShort::from(root.stats[0]._stats[0].clone())
+}
+
+pub fn get_long_stats(root: &RootInterface) -> StatsLong {
+    StatsLong::from(root.stats[0]._stats[1].clone())
+}
+
+// Root JSON object
+#[derive(Clone, Serialize, Deserialize)]
+pub struct RootInterface {
+    stats: Vec<Stats>,
+    pools: Vec<Pools>,
+    summary: Vec<Summary>,
+    devs: Vec<Devs>,
+    fanctrl: Vec<Fanctrl>,
     id: i64,
 }
 
-#[derive(Serialize, Deserialize)]
-struct Devs1 {
-    #[serde(rename = "ASC")]
-    _asc: i64,
-    #[serde(rename = "Name")]
-    _name: String,
-    #[serde(rename = "ID")]
-    _id: i64,
-    #[serde(rename = "Enabled")]
-    _enabled: String,
-    #[serde(rename = "Status")]
-    _status: String,
-    #[serde(rename = "TempAVG")]
-    temp_avg: i64,
-    #[serde(rename = "TempMAX")]
-    temp_max: i64,
-    #[serde(rename = "TempMIN")]
-    temp_min: i64,
-    #[serde(rename = "CHIP")]
-    _chip: i64,
-    #[serde(rename = "FREQ")]
-    _freq: i64,
-    #[serde(rename = "DUTY")]
-    _duty: i64,
-    #[serde(rename = "MHS av")]
-    mhs_av: i64,
-    #[serde(rename = "MHS 5s")]
-    mhs_5_s: i64,
-    #[serde(rename = "MHS 1m")]
-    mhs_1_m: i64,
-    #[serde(rename = "MHS 5m")]
-    mhs_5_m: i64,
-    #[serde(rename = "MHS 15m")]
-    mhs_15_m: i64,
-    #[serde(rename = "nominal MHS")]
-    nominal_mhs: i64,
-    #[serde(rename = "maximal MHS")]
-    maximal_mhs: i64,
-    #[serde(rename = "Accepted")]
-    _accepted: i64,
-    #[serde(rename = "Rejected")]
-    _rejected: i64,
-    #[serde(rename = "Hardware Errors")]
-    hardware_errors: i64,
-}
-
-#[derive(Serialize, Deserialize)]
-struct Fanctrl {
+// stats child
+#[derive(Clone, Serialize, Deserialize)]
+pub struct Stats {
     #[serde(rename = "STATUS")]
     _status: Vec<Status>,
-    #[serde(rename = "FANCTRL")]
-    _fanctrl: Vec<Fanctrl1>,
+    #[serde(rename = "STATS")]
+    _stats: Vec<StatsShortOrStatsLong>,
     id: i64,
 }
 
-#[derive(Serialize, Deserialize)]
-struct Fanctrl1 {
-    #[serde(rename = "Mode")]
-    _mode: String,
-    #[serde(rename = "TargetTemp")]
-    target_temp: i64,
-    #[serde(rename = "TargetPwm")]
-    target_pwm: i64,
-    #[serde(rename = "Temperature")]
-    _temperature: i64,
-    #[serde(rename = "Output")]
-    _output: i64,
-    #[serde(rename = "Interval")]
-    _interval: f64,
-}
-
-#[derive(Serialize, Deserialize)]
-struct Pools {
+// pools child
+#[derive(Clone, Serialize, Deserialize)]
+pub struct Pools {
     #[serde(rename = "STATUS")]
     _status: Vec<Status>,
     #[serde(rename = "POOLS")]
-    _pools: Vec<Pools1>,
+    _pools: Vec<PoolData>,
     id: i64,
 }
 
-#[derive(Serialize, Deserialize)]
-struct Pools1 {
+// summary child
+#[derive(Clone, Serialize, Deserialize)]
+pub struct Summary {
+    #[serde(rename = "STATUS")]
+    _status: Vec<Status>,
+    #[serde(rename = "SUMMARY")]
+    _summary: Vec<SummaryData>,
+    id: i64,
+}
+
+// devs child
+#[derive(Clone, Serialize, Deserialize)]
+pub struct Devs {
+    #[serde(rename = "STATUS")]
+    _status: Vec<Status>,
+    #[serde(rename = "DEVS")]
+    _devs: Vec<DevsData>,
+    id: i64,
+}
+
+// fanctrl child
+#[derive(Clone, Serialize, Deserialize)]
+pub struct Fanctrl {
+    #[serde(rename = "STATUS")]
+    _status: Vec<Status>,
+    #[serde(rename = "FANCTRL")]
+    _fanctrl: Vec<FanctrlData>,
+    id: i64,
+}
+
+// Shared STATUS object
+#[derive(Clone, Serialize, Deserialize)]
+pub struct Status {
+    #[serde(rename = "STATUS")]
+    _status: String,
+    #[serde(rename = "When")]
+    _when: i64,
+    #[serde(rename = "Code")]
+    _code: i64,
+    #[serde(rename = "Msg")]
+    _msg: String,
+    #[serde(rename = "Description")]
+    _description: String,
+}
+
+// Different objects in the STATS array
+#[derive(Clone, Serialize, Deserialize, Debug)]
+#[serde(untagged)]
+pub enum StatsShortOrStatsLong {
+    Long(StatsLong),
+    Short(StatsShort),
+}
+
+// Convert from enum to short stats
+impl From<StatsShortOrStatsLong> for StatsShort {
+    fn from(stats: StatsShortOrStatsLong) -> Self {
+        match stats {
+            StatsShortOrStatsLong::Short(v) => v,
+            _ => unreachable!(),
+        }
+    }
+}
+
+// Convert from enum to long stats
+impl From<StatsShortOrStatsLong> for StatsLong {
+    fn from(stats: StatsShortOrStatsLong) -> Self {
+        match stats {
+            StatsShortOrStatsLong::Long(v) => v,
+            _ => unreachable!(),
+        }
+    }
+}
+
+// Pool data object
+#[derive(Clone, Serialize, Deserialize)]
+pub struct PoolData {
     #[serde(rename = "POOL")]
     _pool: i64,
     #[serde(rename = "URL")]
@@ -164,27 +189,136 @@ struct Pools1 {
     pool_stale: i64,
 }
 
-#[derive(Serialize, Deserialize)]
-struct RootInterface {
-    stats: Vec<Stats>,
-    pools: Vec<Pools>,
-    summary: Vec<Summary>,
-    devs: Vec<Devs>,
-    fanctrl: Vec<Fanctrl>,
-    id: i64,
+// Summary data object
+#[derive(Clone, Serialize, Deserialize)]
+pub struct SummaryData {
+    #[serde(rename = "Elapsed")]
+    _elapsed: i64,
+    #[serde(rename = "GHS 5s")]
+    ghs_5_s: String,
+    #[serde(rename = "GHS av")]
+    ghs_av: f64,
+    #[serde(rename = "Hashrate1m")]
+    hashrate_1_m: f64,
+    #[serde(rename = "Hashrate15m")]
+    hashrate_15_m: f64,
+    #[serde(rename = "Hashrate24h")]
+    hashrate_24_h: f64,
+    #[serde(rename = "Found Blocks")]
+    found_blocks: i64,
+    #[serde(rename = "Getworks")]
+    _getworks: i64,
+    #[serde(rename = "Accepted")]
+    _accepted: i64,
+    #[serde(rename = "Rejected")]
+    _rejected: i64,
+    #[serde(rename = "Hardware Errors")]
+    hardware_errors: i64,
+    #[serde(rename = "Utility")]
+    _utility: f64,
+    #[serde(rename = "Discarded")]
+    _discarded: i64,
+    #[serde(rename = "Stale")]
+    _stale: i64,
+    #[serde(rename = "Get Failures")]
+    get_failures: i64,
+    #[serde(rename = "Local Work")]
+    local_work: i64,
+    #[serde(rename = "Remote Failures")]
+    remote_failures: i64,
+    #[serde(rename = "Network Blocks")]
+    network_blocks: i64,
+    #[serde(rename = "Total MH")]
+    total_mh: i64,
+    #[serde(rename = "Work Utility")]
+    work_utility: f64,
+    #[serde(rename = "Difficulty Accepted")]
+    difficulty_accepted: i64,
+    #[serde(rename = "Difficulty Rejected")]
+    difficulty_rejected: i64,
+    #[serde(rename = "Difficulty Stale")]
+    difficulty_stale: i64,
+    #[serde(rename = "Best Share")]
+    best_share: i64,
+    #[serde(rename = "Device Hardware%")]
+    device_hardware: f64,
+    #[serde(rename = "Device Rejected%")]
+    device_rejected: f64,
+    #[serde(rename = "Pool Rejected%")]
+    pool_rejected: f64,
+    #[serde(rename = "Pool Stale%")]
+    pool_stale: i64,
+    #[serde(rename = "Last getwork")]
+    last_getwork: i64,
 }
 
-#[derive(Serialize, Deserialize)]
-struct Stats {
-    #[serde(rename = "STATUS")]
-    _status: Vec<Status>,
-    #[serde(rename = "STATS")]
-    _stats: Vec<Stats1>,
-    id: i64,
+// Device (ASIC board) data object
+#[derive(Clone, Serialize, Deserialize)]
+pub struct DevsData {
+    #[serde(rename = "ASC")]
+    _asc: i64,
+    #[serde(rename = "Name")]
+    _name: String,
+    #[serde(rename = "ID")]
+    _id: i64,
+    #[serde(rename = "Enabled")]
+    _enabled: String,
+    #[serde(rename = "Status")]
+    _status: String,
+    #[serde(rename = "TempAVG")]
+    temp_avg: i64,
+    #[serde(rename = "TempMAX")]
+    temp_max: i64,
+    #[serde(rename = "TempMIN")]
+    temp_min: i64,
+    #[serde(rename = "CHIP")]
+    _chip: i64,
+    #[serde(rename = "FREQ")]
+    _freq: i64,
+    #[serde(rename = "DUTY")]
+    _duty: i64,
+    #[serde(rename = "MHS av")]
+    mhs_av: i64,
+    #[serde(rename = "MHS 5s")]
+    mhs_5_s: i64,
+    #[serde(rename = "MHS 1m")]
+    mhs_1_m: i64,
+    #[serde(rename = "MHS 5m")]
+    mhs_5_m: i64,
+    #[serde(rename = "MHS 15m")]
+    mhs_15_m: i64,
+    #[serde(rename = "nominal MHS")]
+    nominal_mhs: i64,
+    #[serde(rename = "maximal MHS")]
+    maximal_mhs: i64,
+    #[serde(rename = "Accepted")]
+    _accepted: i64,
+    #[serde(rename = "Rejected")]
+    _rejected: i64,
+    #[serde(rename = "Hardware Errors")]
+    hardware_errors: i64,
 }
 
-#[derive(Serialize, Deserialize)]
-struct Stats1 {
+// Fan control data object
+#[derive(Clone, Serialize, Deserialize)]
+pub struct FanctrlData {
+    #[serde(rename = "Mode")]
+    _mode: String,
+    #[serde(rename = "TargetTemp")]
+    target_temp: i64,
+    #[serde(rename = "TargetPwm")]
+    target_pwm: i64,
+    #[serde(rename = "Temperature")]
+    _temperature: i64,
+    #[serde(rename = "Output")]
+    _output: i64,
+    #[serde(rename = "Interval")]
+    _interval: f64,
+}
+
+// The short status object
+#[derive(Clone, Serialize, Deserialize, Debug)]
+pub struct StatsShort {
     #[serde(rename = "BMMiner")]
     bm_miner: Option<String>,
     #[serde(rename = "Miner")]
@@ -193,6 +327,11 @@ struct Stats1 {
     compile_time: Option<String>,
     #[serde(rename = "Type")]
     _type: Option<String>,
+}
+
+// The long status object
+#[derive(Clone, Serialize, Deserialize, Debug)]
+pub struct StatsLong {
     #[serde(rename = "STATS")]
     _stats: Option<i64>,
     #[serde(rename = "ID")]
@@ -209,7 +348,6 @@ struct Stats1 {
     _min: Option<i64>,
     #[serde(rename = "GHS 5s")]
     ghs_5_s: String,
-
     #[serde(rename = "GHS av")]
     ghs_av: f64,
     miner_count: Option<i64>,
@@ -617,89 +755,4 @@ struct Stats1 {
     chain_opencore_7: Option<String>,
     chain_opencore_8: Option<String>,
     miner_version: Option<String>,
-}
-
-#[derive(Serialize, Deserialize)]
-struct Status {
-    #[serde(rename = "STATUS")]
-    _status: String,
-    #[serde(rename = "When")]
-    _when: i64,
-    #[serde(rename = "Code")]
-    _code: i64,
-    #[serde(rename = "Msg")]
-    _msg: String,
-    #[serde(rename = "Description")]
-    _description: String,
-}
-
-#[derive(Serialize, Deserialize)]
-struct Summary {
-    #[serde(rename = "STATUS")]
-    _status: Vec<Status>,
-    #[serde(rename = "SUMMARY")]
-    _summary: Vec<Summary1>,
-    id: i64,
-}
-
-#[derive(Serialize, Deserialize)]
-struct Summary1 {
-    #[serde(rename = "Elapsed")]
-    _elapsed: i64,
-    #[serde(rename = "GHS 5s")]
-    ghs_5_s: String,
-    #[serde(rename = "GHS av")]
-    ghs_av: f64,
-    #[serde(rename = "Hashrate1m")]
-    hashrate_1_m: f64,
-    #[serde(rename = "Hashrate15m")]
-    hashrate_15_m: f64,
-    #[serde(rename = "Hashrate24h")]
-    hashrate_24_h: f64,
-    #[serde(rename = "Found Blocks")]
-    found_blocks: i64,
-    #[serde(rename = "Getworks")]
-    _getworks: i64,
-    #[serde(rename = "Accepted")]
-    _accepted: i64,
-    #[serde(rename = "Rejected")]
-    _rejected: i64,
-    #[serde(rename = "Hardware Errors")]
-    hardware_errors: i64,
-    #[serde(rename = "Utility")]
-    _utility: f64,
-    #[serde(rename = "Discarded")]
-    _discarded: i64,
-    #[serde(rename = "Stale")]
-    _stale: i64,
-    #[serde(rename = "Get Failures")]
-    get_failures: i64,
-    #[serde(rename = "Local Work")]
-    local_work: i64,
-    #[serde(rename = "Remote Failures")]
-    remote_failures: i64,
-    #[serde(rename = "Network Blocks")]
-    network_blocks: i64,
-    #[serde(rename = "Total MH")]
-    total_mh: i64,
-    #[serde(rename = "Work Utility")]
-    work_utility: f64,
-    #[serde(rename = "Difficulty Accepted")]
-    difficulty_accepted: i64,
-    #[serde(rename = "Difficulty Rejected")]
-    difficulty_rejected: i64,
-    #[serde(rename = "Difficulty Stale")]
-    difficulty_stale: i64,
-    #[serde(rename = "Best Share")]
-    best_share: i64,
-    #[serde(rename = "Device Hardware%")]
-    device_hardware: f64,
-    #[serde(rename = "Device Rejected%")]
-    device_rejected: f64,
-    #[serde(rename = "Pool Rejected%")]
-    pool_rejected: f64,
-    #[serde(rename = "Pool Stale%")]
-    pool_stale: i64,
-    #[serde(rename = "Last getwork")]
-    last_getwork: i64,
 }
