@@ -4,7 +4,7 @@ Result of probing a miner
 use serde::{Serialize, Deserialize};
 
 pub fn deserialize(string: String) {
-    let deserialized: Devs = serde_json::from_str(&string).unwrap();
+    let deserialized: RootInterface = serde_json::from_str(&string).unwrap();
 }
 
 #[derive(Serialize, Deserialize)]
@@ -209,6 +209,7 @@ struct Stats1 {
     _min: Option<i64>,
     #[serde(rename = "GHS 5s")]
     ghs_5_s: String,
+
     #[serde(rename = "GHS av")]
     ghs_av: f64,
     miner_count: Option<i64>,
