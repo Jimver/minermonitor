@@ -2,9 +2,15 @@
 Result of probing a miner
 */
 use serde::{Serialize, Deserialize};
+use std::io;
+use serde_json::error::Error;
 
-pub fn deserialize(string: String) -> AntS9Probe {
+pub fn deserialize_string(string: String) -> AntS9Probe {
     serde_json::from_str(&string).unwrap()
+}
+
+pub fn deserialize_reader<R>(reader: R) -> Result<AntS9Probe, Error> where R: io::Read{
+    serde_json::from_reader(reader)
 }
 
 pub fn get_short_stats(root: &AntS9Probe) -> StatsShort {
@@ -92,7 +98,7 @@ pub struct Status {
 }
 
 // Different objects in the STATS array
-#[derive(Clone, Serialize, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum StatsShortOrStatsLong {
     Long(StatsLong),
@@ -316,7 +322,7 @@ pub struct FanctrlData {
 }
 
 // The short status object
-#[derive(Clone, Serialize, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct StatsShort {
     #[serde(rename = "BMMiner")]
     pub bm_miner: Option<String>,
@@ -329,7 +335,7 @@ pub struct StatsShort {
 }
 
 // The long status object
-#[derive(Clone, Serialize, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct StatsLong {
     #[serde(rename = "STATS")]
     pub _stats: Option<i64>,
