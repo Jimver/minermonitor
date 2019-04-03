@@ -7,7 +7,6 @@ use crate::backend::probe::probe_result::{AntS9Probe, StatsLong, get_long_stats}
 
 pub struct AntS9 {
     hash_rate: f64,
-    avg_frequency: f64,
     frequency: Vec<i64>,
     voltage: Vec<f64>,
     error_rate: Vec<i64>,
@@ -21,7 +20,6 @@ impl From<AntS9Probe> for AntS9 {
         let stats: StatsLong = get_long_stats(&probe);
         AntS9{
             hash_rate: probe.summary[0]._summary[0].ghs_5_s.parse().unwrap(),
-            avg_frequency: stats.total_freqavg.unwrap(),
             frequency: vec![stats.freq_avg_6.unwrap(), stats.freq_avg_7.unwrap(), stats.freq_avg_8.unwrap()],
             voltage: vec![stats.voltage_6.unwrap(), stats.voltage_7.unwrap(), stats.voltage_8.unwrap()],
             error_rate: vec![probe.devs[0]._devs[0].hardware_errors, probe.devs[0]._devs[1].hardware_errors, probe.devs[0]._devs[2].hardware_errors],
