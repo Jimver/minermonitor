@@ -13,7 +13,9 @@ enum ProbeError {
     InvalidCredentials {
         username: String,
         password: String
-    }
+    },
+    #[fail(display = "invalid cookie")]
+    InvalidCookie
 }
 
 // Probe a miner at the given http endpoint url.
@@ -52,13 +54,20 @@ fn authenticate(host: &Host, user: &str, password: &str) -> Result<String, Error
     Ok(cookie)
 }
 
+// Extract cookie from response
 fn extract_cookie(res: reqwest::Response, user: &str, password: &str) -> Result<String, ProbeError> {
     match res.headers().get(SET_COOKIE) {
         Some(v) => {
+            // Get cookie from header
             let cookies: String = v.to_str().unwrap().to_string();
+            // Strip off unnecessary info
             let split: Vec<&str> = cookies.split(";").collect();
-            let cookie = split.get(0).expect("Empty vector");
-            Ok(cookie.parse().unwrap())
+            let cookie = split.get(0);
+            // If there is no first array element the cookie string must have been malformed
+            match cookie {
+                Some(v) => Ok(v.parse().unwrap()),
+                None => Err(ProbeError::InvalidCookie)
+            }
         },
         None => Err(ProbeError::InvalidCredentials { username: user.to_string(), password: password.to_string() })
     }
