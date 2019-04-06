@@ -2,9 +2,11 @@
 
 #[macro_use] extern crate rocket;
 extern crate url;
+extern crate hyper;
 
 use crate::backend::probe::miner_probe::probe;
 use crate::backend::api::miner::Miner;
+use url::Host;
 
 pub mod backend;
 
@@ -15,7 +17,7 @@ fn index() -> &'static str {
 }
 
 fn main() {
-    let res = probe(url::Url::parse("http://1.1.1.1").unwrap());
+    let res = probe(Host::parse("192.168.1.95").unwrap());
     println!("{:#?}", res.hash_rate());
     rocket::ignite().mount("/", routes![index]).launch();
 }
