@@ -2,14 +2,13 @@
 
 #[macro_use] extern crate rocket;
 extern crate url;
-extern crate hyper;
 
 use crate::backend::probe::miner_probe::probe;
 use crate::backend::api::miner::Miner;
 use url::Host;
+use std::time::{Duration, Instant};
 
 pub mod backend;
-
 
 #[get("/")]
 fn index() -> &'static str {
@@ -17,7 +16,10 @@ fn index() -> &'static str {
 }
 
 fn main() {
+    let before = Instant::now();
     let res = probe(Host::parse("192.168.1.95").unwrap());
+    let duration: Duration= Instant::now().duration_since(before);
+    println!("Time taken: {:?}ms", duration.as_millis());
     println!("{:#?}", res.hash_rate());
     rocket::ignite().mount("/", routes![index]).launch();
 }

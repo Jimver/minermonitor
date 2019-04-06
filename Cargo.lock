@@ -500,7 +500,6 @@ dependencies = [
 name = "minermonitor"
 version = "0.1.0"
 dependencies = [
- "hyper 0.12.25 (registry+https://github.com/rust-lang/crates.io-index)",
  "reqwest 0.9.13 (registry+https://github.com/rust-lang/crates.io-index)",
  "rocket 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.89 (registry+https://github.com/rust-lang/crates.io-index)",

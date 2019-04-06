@@ -3,9 +3,9 @@ use url::Host;
 //use rocket::Rocket;
 //use rocket::http::{ContentType, Cookie, Status};
 use reqwest::header::SET_COOKIE;
-use std::{fmt, error, fs};
+use std::{fmt, error};
 use crate::backend::api::miner::Miner;
-use crate::backend::probe::probe_result::{deserialize_string, deserialize_reader, AntS9Probe};
+use crate::backend::probe::probe_result::AntS9Probe;
 use crate::backend::probe::probe_extractor::AntS9;
 
 #[derive(Debug, Clone)]
@@ -65,9 +65,9 @@ fn authenticate(host: &Host, user: &str, password: &str) -> Result<String, AuthE
     match res.headers().get(SET_COOKIE) {
         Some(v) => {
             let cookies: String = v.to_str().unwrap().to_string();
-            let split: Vec<_> = cookies.split(";").collect();
-            let cookie = split[0];
-            Ok(cookies)
+            let split: Vec<&str> = cookies.split(";").collect();
+            let cookie = split.get(0).expect("Empty vector");
+            Ok(cookie.parse().unwrap())
         },
         None => Err(AuthError)
     }
