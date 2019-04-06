@@ -161,7 +161,7 @@ pub struct PoolData {
     #[serde(rename = "Diff")]
     pub _diff: String,
     #[serde(rename = "LastDiff")]
-    pub last_diff: i64,
+    pub last_diff: f64,
     #[serde(rename = "Diff1 Shares")]
     pub diff_1_shares: i64,
     #[serde(rename = "Proxy Type")]
@@ -169,13 +169,13 @@ pub struct PoolData {
     #[serde(rename = "Proxy")]
     pub _proxy: String,
     #[serde(rename = "Difficulty Accepted")]
-    pub difficulty_accepted: i64,
+    pub difficulty_accepted: f64,
     #[serde(rename = "Difficulty Rejected")]
-    pub difficulty_rejected: i64,
+    pub difficulty_rejected: f64,
     #[serde(rename = "Difficulty Stale")]
-    pub difficulty_stale: i64,
+    pub difficulty_stale: f64,
     #[serde(rename = "Last Share Difficulty")]
-    pub last_share_difficulty: i64,
+    pub last_share_difficulty: f64,
     #[serde(rename = "Has Stratum")]
     pub has_stratum: bool,
     #[serde(rename = "Asic Boost")]
@@ -191,7 +191,7 @@ pub struct PoolData {
     #[serde(rename = "Pool Rejected%")]
     pub pool_rejected: f64,
     #[serde(rename = "Pool Stale%")]
-    pub pool_stale: i64,
+    pub pool_stale: f64,
 }
 
 // Summary data object
@@ -234,15 +234,15 @@ pub struct SummaryData {
     #[serde(rename = "Network Blocks")]
     pub network_blocks: i64,
     #[serde(rename = "Total MH")]
-    pub total_mh: i64,
+    pub total_mh: f64,
     #[serde(rename = "Work Utility")]
     pub work_utility: f64,
     #[serde(rename = "Difficulty Accepted")]
-    pub difficulty_accepted: i64,
+    pub difficulty_accepted: f64,
     #[serde(rename = "Difficulty Rejected")]
-    pub difficulty_rejected: i64,
+    pub difficulty_rejected: f64,
     #[serde(rename = "Difficulty Stale")]
-    pub difficulty_stale: i64,
+    pub difficulty_stale: f64,
     #[serde(rename = "Best Share")]
     pub best_share: i64,
     #[serde(rename = "Device Hardware%")]
@@ -252,7 +252,7 @@ pub struct SummaryData {
     #[serde(rename = "Pool Rejected%")]
     pub pool_rejected: f64,
     #[serde(rename = "Pool Stale%")]
-    pub pool_stale: i64,
+    pub pool_stale: f64,
     #[serde(rename = "Last getwork")]
     pub last_getwork: i64,
 }
@@ -271,31 +271,31 @@ pub struct DevsData {
     #[serde(rename = "Status")]
     pub _status: String,
     #[serde(rename = "TempAVG")]
-    pub temp_avg: i64,
+    pub temp_avg: f64,
     #[serde(rename = "TempMAX")]
-    pub temp_max: i64,
+    pub temp_max: f64,
     #[serde(rename = "TempMIN")]
-    pub temp_min: i64,
+    pub temp_min: f64,
     #[serde(rename = "CHIP")]
     pub _chip: i64,
     #[serde(rename = "FREQ")]
-    pub _freq: i64,
+    pub _freq: f64,
     #[serde(rename = "DUTY")]
     pub _duty: i64,
     #[serde(rename = "MHS av")]
-    pub mhs_av: i64,
+    pub mhs_av: f64,
     #[serde(rename = "MHS 5s")]
-    pub mhs_5_s: i64,
+    pub mhs_5_s: f64,
     #[serde(rename = "MHS 1m")]
-    pub mhs_1_m: i64,
+    pub mhs_1_m: f64,
     #[serde(rename = "MHS 5m")]
-    pub mhs_5_m: i64,
+    pub mhs_5_m: f64,
     #[serde(rename = "MHS 15m")]
-    pub mhs_15_m: i64,
+    pub mhs_15_m: f64,
     #[serde(rename = "nominal MHS")]
-    pub nominal_mhs: i64,
+    pub nominal_mhs: f64,
     #[serde(rename = "maximal MHS")]
-    pub maximal_mhs: i64,
+    pub maximal_mhs: f64,
     #[serde(rename = "Accepted")]
     pub _accepted: i64,
     #[serde(rename = "Rejected")]
@@ -310,11 +310,11 @@ pub struct FanctrlData {
     #[serde(rename = "Mode")]
     pub _mode: String,
     #[serde(rename = "TargetTemp")]
-    pub target_temp: i64,
+    pub target_temp: f64,
     #[serde(rename = "TargetPwm")]
     pub target_pwm: i64,
     #[serde(rename = "Temperature")]
-    pub _temperature: i64,
+    pub _temperature: f64,
     #[serde(rename = "Output")]
     pub _output: i64,
     #[serde(rename = "Interval")]
@@ -346,11 +346,11 @@ pub struct StatsLong {
     #[serde(rename = "Calls")]
     pub _calls: Option<i64>,
     #[serde(rename = "Wait")]
-    pub _wait: Option<i64>,
+    pub _wait: Option<f64>,
     #[serde(rename = "Max")]
-    pub _max: Option<i64>,
+    pub _max: Option<f64>,
     #[serde(rename = "Min")]
-    pub _min: Option<i64>,
+    pub _min: Option<f64>,
     #[serde(rename = "GHS 5s")]
     pub ghs_5_s: String,
     #[serde(rename = "GHS av")]
@@ -375,15 +375,15 @@ pub struct StatsLong {
     #[serde(rename = "fan8")]
     pub fan_8: Option<i64>,
     #[serde(rename = "voltage1")]
-    pub voltage_1: Option<i64>,
+    pub voltage_1: Option<f64>,
     #[serde(rename = "voltage2")]
-    pub voltage_2: Option<i64>,
+    pub voltage_2: Option<f64>,
     #[serde(rename = "voltage3")]
-    pub voltage_3: Option<i64>,
+    pub voltage_3: Option<f64>,
     #[serde(rename = "voltage4")]
-    pub voltage_4: Option<i64>,
+    pub voltage_4: Option<f64>,
     #[serde(rename = "voltage5")]
-    pub voltage_5: Option<i64>,
+    pub voltage_5: Option<f64>,
     #[serde(rename = "voltage6")]
     pub voltage_6: Option<f64>,
     #[serde(rename = "voltage7")]
@@ -391,118 +391,118 @@ pub struct StatsLong {
     #[serde(rename = "voltage8")]
     pub voltage_8: Option<f64>,
     #[serde(rename = "voltage9")]
-    pub voltage_9: Option<i64>,
+    pub voltage_9: Option<f64>,
     #[serde(rename = "voltage10")]
-    pub voltage_10: Option<i64>,
+    pub voltage_10: Option<f64>,
     #[serde(rename = "voltage11")]
-    pub voltage_11: Option<i64>,
+    pub voltage_11: Option<f64>,
     #[serde(rename = "voltage12")]
-    pub voltage_12: Option<i64>,
+    pub voltage_12: Option<f64>,
     #[serde(rename = "voltage13")]
-    pub voltage_13: Option<i64>,
+    pub voltage_13: Option<f64>,
     #[serde(rename = "voltage14")]
-    pub voltage_14: Option<i64>,
+    pub voltage_14: Option<f64>,
     #[serde(rename = "voltage15")]
-    pub voltage_15: Option<i64>,
+    pub voltage_15: Option<f64>,
     #[serde(rename = "voltage16")]
-    pub voltage_16: Option<i64>,
+    pub voltage_16: Option<f64>,
     pub temp_num: Option<i64>,
     #[serde(rename = "temp1")]
-    pub temp_1: Option<i64>,
+    pub temp_1: Option<f64>,
     #[serde(rename = "temp2")]
-    pub temp_2: Option<i64>,
+    pub temp_2: Option<f64>,
     #[serde(rename = "temp3")]
-    pub temp_3: Option<i64>,
+    pub temp_3: Option<f64>,
     #[serde(rename = "temp4")]
-    pub temp_4: Option<i64>,
+    pub temp_4: Option<f64>,
     #[serde(rename = "temp5")]
-    pub temp_5: Option<i64>,
+    pub temp_5: Option<f64>,
     #[serde(rename = "temp6")]
-    pub temp_6: Option<i64>,
+    pub temp_6: Option<f64>,
     #[serde(rename = "temp7")]
-    pub temp_7: Option<i64>,
+    pub temp_7: Option<f64>,
     #[serde(rename = "temp8")]
-    pub temp_8: Option<i64>,
+    pub temp_8: Option<f64>,
     #[serde(rename = "temp9")]
-    pub temp_9: Option<i64>,
+    pub temp_9: Option<f64>,
     #[serde(rename = "temp10")]
-    pub temp_10: Option<i64>,
+    pub temp_10: Option<f64>,
     #[serde(rename = "temp11")]
-    pub temp_11: Option<i64>,
+    pub temp_11: Option<f64>,
     #[serde(rename = "temp12")]
-    pub temp_12: Option<i64>,
+    pub temp_12: Option<f64>,
     #[serde(rename = "temp13")]
-    pub temp_13: Option<i64>,
+    pub temp_13: Option<f64>,
     #[serde(rename = "temp14")]
-    pub temp_14: Option<i64>,
+    pub temp_14: Option<f64>,
     #[serde(rename = "temp15")]
-    pub temp_15: Option<i64>,
+    pub temp_15: Option<f64>,
     #[serde(rename = "temp16")]
-    pub temp_16: Option<i64>,
+    pub temp_16: Option<f64>,
     #[serde(rename = "temp2_1")]
-    pub temp_2_1: Option<i64>,
+    pub temp_2_1: Option<f64>,
     #[serde(rename = "temp2_2")]
-    pub temp_2_2: Option<i64>,
+    pub temp_2_2: Option<f64>,
     #[serde(rename = "temp2_3")]
-    pub temp_2_3: Option<i64>,
+    pub temp_2_3: Option<f64>,
     #[serde(rename = "temp2_4")]
-    pub temp_2_4: Option<i64>,
+    pub temp_2_4: Option<f64>,
     #[serde(rename = "temp2_5")]
-    pub temp_2_5: Option<i64>,
+    pub temp_2_5: Option<f64>,
     #[serde(rename = "temp2_6")]
-    pub temp_2_6: Option<i64>,
+    pub temp_2_6: Option<f64>,
     #[serde(rename = "temp2_7")]
-    pub temp_2_7: Option<i64>,
+    pub temp_2_7: Option<f64>,
     #[serde(rename = "temp2_8")]
-    pub temp_2_8: Option<i64>,
+    pub temp_2_8: Option<f64>,
     #[serde(rename = "temp2_9")]
-    pub temp_2_9: Option<i64>,
+    pub temp_2_9: Option<f64>,
     #[serde(rename = "temp2_10")]
-    pub temp_2_10: Option<i64>,
+    pub temp_2_10: Option<f64>,
     #[serde(rename = "temp2_11")]
-    pub temp_2_11: Option<i64>,
+    pub temp_2_11: Option<f64>,
     #[serde(rename = "temp2_12")]
-    pub temp_2_12: Option<i64>,
+    pub temp_2_12: Option<f64>,
     #[serde(rename = "temp2_13")]
-    pub temp_2_13: Option<i64>,
+    pub temp_2_13: Option<f64>,
     #[serde(rename = "temp2_14")]
-    pub temp_2_14: Option<i64>,
+    pub temp_2_14: Option<f64>,
     #[serde(rename = "temp2_15")]
-    pub temp_2_15: Option<i64>,
+    pub temp_2_15: Option<f64>,
     #[serde(rename = "temp2_16")]
-    pub temp_2_16: Option<i64>,
+    pub temp_2_16: Option<f64>,
     #[serde(rename = "temp3_1")]
-    pub temp_3_1: Option<i64>,
+    pub temp_3_1: Option<f64>,
     #[serde(rename = "temp3_2")]
-    pub temp_3_2: Option<i64>,
+    pub temp_3_2: Option<f64>,
     #[serde(rename = "temp3_3")]
-    pub temp_3_3: Option<i64>,
+    pub temp_3_3: Option<f64>,
     #[serde(rename = "temp3_4")]
-    pub temp_3_4: Option<i64>,
+    pub temp_3_4: Option<f64>,
     #[serde(rename = "temp3_5")]
-    pub temp_3_5: Option<i64>,
+    pub temp_3_5: Option<f64>,
     #[serde(rename = "temp3_6")]
-    pub temp_3_6: Option<i64>,
+    pub temp_3_6: Option<f64>,
     #[serde(rename = "temp3_7")]
-    pub temp_3_7: Option<i64>,
+    pub temp_3_7: Option<f64>,
     #[serde(rename = "temp3_8")]
-    pub temp_3_8: Option<i64>,
+    pub temp_3_8: Option<f64>,
     #[serde(rename = "temp3_9")]
-    pub temp_3_9: Option<i64>,
+    pub temp_3_9: Option<f64>,
     #[serde(rename = "temp3_10")]
-    pub temp_3_10: Option<i64>,
+    pub temp_3_10: Option<f64>,
     #[serde(rename = "temp3_11")]
-    pub temp_3_11: Option<i64>,
+    pub temp_3_11: Option<f64>,
     #[serde(rename = "temp3_12")]
-    pub temp_3_12: Option<i64>,
+    pub temp_3_12: Option<f64>,
     #[serde(rename = "temp3_13")]
-    pub temp_3_13: Option<i64>,
+    pub temp_3_13: Option<f64>,
     #[serde(rename = "temp3_14")]
-    pub temp_3_14: Option<i64>,
+    pub temp_3_14: Option<f64>,
     #[serde(rename = "temp3_15")]
-    pub temp_3_15: Option<i64>,
+    pub temp_3_15: Option<f64>,
     #[serde(rename = "temp3_16")]
-    pub temp_3_16: Option<i64>,
+    pub temp_3_16: Option<f64>,
     #[serde(rename = "freq_desc6")]
     pub freq_desc_6: Option<String>,
     #[serde(rename = "freq_desc7")]
@@ -510,51 +510,51 @@ pub struct StatsLong {
     #[serde(rename = "freq_desc8")]
     pub freq_desc_8: Option<String>,
     #[serde(rename = "freq_avg1")]
-    pub freq_avg_1: Option<i64>,
+    pub freq_avg_1: Option<f64>,
     #[serde(rename = "freq_avg2")]
-    pub freq_avg_2: Option<i64>,
+    pub freq_avg_2: Option<f64>,
     #[serde(rename = "freq_avg3")]
-    pub freq_avg_3: Option<i64>,
+    pub freq_avg_3: Option<f64>,
     #[serde(rename = "freq_avg4")]
-    pub freq_avg_4: Option<i64>,
+    pub freq_avg_4: Option<f64>,
     #[serde(rename = "freq_avg5")]
-    pub freq_avg_5: Option<i64>,
+    pub freq_avg_5: Option<f64>,
     #[serde(rename = "freq_avg6")]
-    pub freq_avg_6: Option<i64>,
+    pub freq_avg_6: Option<f64>,
     #[serde(rename = "freq_avg7")]
-    pub freq_avg_7: Option<i64>,
+    pub freq_avg_7: Option<f64>,
     #[serde(rename = "freq_avg8")]
-    pub freq_avg_8: Option<i64>,
+    pub freq_avg_8: Option<f64>,
     #[serde(rename = "freq_avg9")]
-    pub freq_avg_9: Option<i64>,
+    pub freq_avg_9: Option<f64>,
     #[serde(rename = "freq_avg10")]
-    pub freq_avg_10: Option<i64>,
+    pub freq_avg_10: Option<f64>,
     #[serde(rename = "freq_avg11")]
-    pub freq_avg_11: Option<i64>,
+    pub freq_avg_11: Option<f64>,
     #[serde(rename = "freq_avg12")]
-    pub freq_avg_12: Option<i64>,
+    pub freq_avg_12: Option<f64>,
     #[serde(rename = "freq_avg13")]
-    pub freq_avg_13: Option<i64>,
+    pub freq_avg_13: Option<f64>,
     #[serde(rename = "freq_avg14")]
-    pub freq_avg_14: Option<i64>,
+    pub freq_avg_14: Option<f64>,
     #[serde(rename = "freq_avg15")]
-    pub freq_avg_15: Option<i64>,
+    pub freq_avg_15: Option<f64>,
     #[serde(rename = "freq_avg16")]
-    pub req_avg_16: Option<i64>,
+    pub req_avg_16: Option<f64>,
     pub total_rateideal: Option<f64>,
     pub total_freqavg: Option<f64>,
     pub total_acn: Option<i64>,
     pub total_rate: Option<f64>,
     #[serde(rename = "chain_rateideal1")]
-    pub chain_rateideal_1: Option<i64>,
+    pub chain_rateideal_1: Option<f64>,
     #[serde(rename = "chain_rateideal2")]
-    pub chain_rateideal_2: Option<i64>,
+    pub chain_rateideal_2: Option<f64>,
     #[serde(rename = "chain_rateideal3")]
-    pub chain_rateideal_3: Option<i64>,
+    pub chain_rateideal_3: Option<f64>,
     #[serde(rename = "chain_rateideal4")]
-    pub cjain_rateideal_4: Option<i64>,
+    pub cjain_rateideal_4: Option<f64>,
     #[serde(rename = "chain_rateideal5")]
-    pub cjain_rateideal_5: Option<i64>,
+    pub cjain_rateideal_5: Option<f64>,
     #[serde(rename = "chain_rateideal6")]
     pub cjain_rateideal_6: Option<f64>,
     #[serde(rename = "chain_rateideal7")]
@@ -562,22 +562,22 @@ pub struct StatsLong {
     #[serde(rename = "chain_rateideal8")]
     pub cjain_rateideal_8: Option<f64>,
     #[serde(rename = "chain_rateideal9")]
-    pub cjain_rateideal_9: Option<i64>,
+    pub cjain_rateideal_9: Option<f64>,
     #[serde(rename = "chain_rateideal10")]
-    pub cjain_rateideal_10: Option<i64>,
+    pub cjain_rateideal_10: Option<f64>,
     #[serde(rename = "chain_rateideal11")]
-    pub cjain_rateideal_11: Option<i64>,
+    pub cjain_rateideal_11: Option<f64>,
     #[serde(rename = "chain_rateideal12")]
-    pub cjain_rateideal_12: Option<i64>,
+    pub cjain_rateideal_12: Option<f64>,
     #[serde(rename = "chain_rateideal13")]
-    pub cjain_rateideal_13: Option<i64>,
+    pub cjain_rateideal_13: Option<f64>,
     #[serde(rename = "chain_rateideal14")]
-    pub cjain_rateideal_14: Option<i64>,
+    pub cjain_rateideal_14: Option<f64>,
     #[serde(rename = "chain_rateideal15")]
-    pub cjain_rateideal_15: Option<i64>,
+    pub cjain_rateideal_15: Option<f64>,
     #[serde(rename = "chain_rateideal16")]
-    pub cjain_rateideal_16: Option<i64>,
-    pub temp_max: Option<i64>,
+    pub cjain_rateideal_16: Option<f64>,
+    pub temp_max: Option<f64>,
     #[serde(rename = "Device Hardware%")]
     pub device_hardware: f64,
     pub no_matching_work: Option<i64>,
@@ -684,15 +684,15 @@ pub struct StatsLong {
     #[serde(rename = "chain_hw16")]
     pub chain_hw_16: Option<i64>,
     #[serde(rename = "chain_hwrate1")]
-    pub chain_hwrate_1: Option<i64>,
+    pub chain_hwrate_1: Option<f64>,
     #[serde(rename = "chain_hwrate2")]
-    pub chain_hwrate_2: Option<i64>,
+    pub chain_hwrate_2: Option<f64>,
     #[serde(rename = "chain_hwrate3")]
-    pub chain_hwrate_3: Option<i64>,
+    pub chain_hwrate_3: Option<f64>,
     #[serde(rename = "chain_hwrate4")]
-    pub chain_hwrate_4: Option<i64>,
+    pub chain_hwrate_4: Option<f64>,
     #[serde(rename = "chain_hwrate5")]
-    pub chain_hwrate_5: Option<i64>,
+    pub chain_hwrate_5: Option<f64>,
     #[serde(rename = "chain_hwrate6")]
     pub chain_hwrate_6: Option<f64>,
     #[serde(rename = "chain_hwrate7")]
@@ -700,21 +700,21 @@ pub struct StatsLong {
     #[serde(rename = "chain_hwrate8")]
     pub chain_hwrate_8: Option<f64>,
     #[serde(rename = "chain_hwrate9")]
-    pub chain_hwrate_9: Option<i64>,
+    pub chain_hwrate_9: Option<f64>,
     #[serde(rename = "chain_hwrate10")]
-    pub chain_hwrate_10: Option<i64>,
+    pub chain_hwrate_10: Option<f64>,
     #[serde(rename = "chain_hwrate11")]
-    pub chain_hwrate_11: Option<i64>,
+    pub chain_hwrate_11: Option<f64>,
     #[serde(rename = "chain_hwrate12")]
-    pub chain_hwrate_12: Option<i64>,
+    pub chain_hwrate_12: Option<f64>,
     #[serde(rename = "chain_hwrate13")]
-    pub chain_hwrate_13: Option<i64>,
+    pub chain_hwrate_13: Option<f64>,
     #[serde(rename = "chain_hwrate14")]
-    pub chain_hwrate_14: Option<i64>,
+    pub chain_hwrate_14: Option<f64>,
     #[serde(rename = "chain_hwrate15")]
-    pub chain_hwrate_15: Option<i64>,
+    pub chain_hwrate_15: Option<f64>,
     #[serde(rename = "chain_hwrate16")]
-    pub chain_hwrate_16: Option<i64>,
+    pub chain_hwrate_16: Option<f64>,
     #[serde(rename = "chain_rate1")]
     pub chain_rate_1: Option<String>,
     #[serde(rename = "chain_rate2")]

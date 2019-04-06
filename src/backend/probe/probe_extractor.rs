@@ -7,12 +7,12 @@ use crate::backend::probe::probe_result::{AntS9Probe, StatsLong, get_long_stats}
 
 pub struct AntS9 {
     hash_rate: f64,
-    frequency: Vec<i64>,
+    frequency: Vec<f64>,
     voltage: Vec<f64>,
     error_rate: Vec<i64>,
     fan_speed: Vec<i64>,
-    temperature1: Vec<i64>,
-    temperature2: Vec<i64>
+    temperature1: Vec<f64>,
+    temperature2: Vec<f64>
 }
 
 impl From<AntS9Probe> for AntS9 {
@@ -35,7 +35,7 @@ impl backend::api::miner::Miner for AntS9 {
         self.hash_rate
     }
 
-    fn frequency(&self) -> Vec<i64> {
+    fn frequency(&self) -> Vec<f64> {
         self.frequency.clone()
     }
 
@@ -51,11 +51,11 @@ impl backend::api::miner::Miner for AntS9 {
         self.fan_speed.clone()
     }
 
-    fn temperature1(&self) -> Vec<i64> {
+    fn temperature1(&self) -> Vec<f64> {
         self.temperature1.clone()
     }
 
-    fn temperature2(&self) -> Vec<i64> {
+    fn temperature2(&self) -> Vec<f64> {
         self.temperature2.clone()
     }
 }
