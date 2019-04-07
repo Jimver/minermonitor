@@ -30,7 +30,7 @@ impl From<AntS9Probe> for AntS9 {
     }
 }
 
-impl backend::api::miner::Miner for AntS9 {
+impl backend::api::miner::MinerStats for AntS9 {
     fn hash_rate(&self) -> f64 {
         self.hash_rate
     }

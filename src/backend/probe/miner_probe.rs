@@ -3,7 +3,7 @@ use reqwest::header::SET_COOKIE;
 use reqwest::Response;
 use url::Host;
 
-use crate::backend::api::miner::Miner;
+use crate::backend::api::miner::MinerStats;
 use crate::backend::probe::probe_extractor::AntS9;
 use crate::backend::probe::probe_result::AntS9Probe;
 
@@ -26,7 +26,7 @@ enum ProbeError {
 }
 
 // Probe a miner at the given http endpoint url.
-pub fn probe(host: Host, user: &str, password: &str) -> Result<impl Miner, Error> {
+pub fn probe(host: Host, user: &str, password: &str) -> Result<impl MinerStats, Error> {
     // Authenticate
     let auth_cookie: String = authenticate(&host, user, password)?;
     // Make API request for status

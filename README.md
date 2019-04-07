@@ -1,2 +1,2 @@
 # minermonitor
-Miner monitor
+miner monitor

@@ -1,17 +1,26 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use]
+extern crate diesel;
+#[macro_use]
 extern crate rocket;
+#[macro_use]
+extern crate rocket_contrib;
 extern crate url;
 
 use std::time::{Duration, Instant};
 
+use diesel::SqliteConnection;
 use url::Host;
 
-use crate::backend::api::miner::Miner;
-use crate::backend::probe::miner_probe::probe;
+use backend::api::miner::MinerStats;
+use backend::probe::miner_probe::probe;
 
 pub mod backend;
+pub mod schema;
+
+#[database("sqlite_db")]
+pub struct DbConn(SqliteConnection);
 
 #[get("/")]
 fn index() -> &'static str {
@@ -24,5 +33,15 @@ fn main() {
     let duration: Duration = Instant::now().duration_since(before);
     println!("Time taken: {:?}ms", duration.as_millis());
     println!("{:#?}", res.hash_rate());
-    rocket::ignite().mount("/", routes![index]).launch();
+    rocket::ignite()
+        .attach(DbConn::fairing())
+        .mount("/", routes![index])
+        .mount("/miner", routes![
+                backend::api::miner::create,
+                backend::api::miner::read,
+                backend::api::miner::update,
+                backend::api::miner::delete
+            ],
+        )
+        .launch();
 }
