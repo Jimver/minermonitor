@@ -1,15 +1,16 @@
 /*
 Result of probing a miner
 */
-use serde::{Serialize, Deserialize};
 use std::io;
+
+use serde::{Deserialize, Serialize};
 use serde_json::error::Error;
 
 pub fn deserialize_string(string: String) -> AntS9Probe {
     serde_json::from_str(&string).unwrap()
 }
 
-pub fn deserialize_reader<R>(reader: R) -> Result<AntS9Probe, Error> where R: io::Read{
+pub fn deserialize_reader<R>(reader: R) -> Result<AntS9Probe, Error> where R: io::Read {
     serde_json::from_reader(reader)
 }
 
