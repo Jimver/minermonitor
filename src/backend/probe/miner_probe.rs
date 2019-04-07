@@ -10,7 +10,10 @@ use crate::backend::probe::probe_result::AntS9Probe;
 // Custom error for authentication
 #[derive(Fail, Debug)]
 enum ProbeError {
-    #[fail(display = "invalid credentials for {}: username: {}, password: {}", host, username, password)]
+    #[fail(
+        display = "invalid credentials for {}: username: {}, password: {}",
+        host, username, password
+    )]
     InvalidCredentials {
         host: String,
         username: String,
@@ -19,10 +22,7 @@ enum ProbeError {
     #[fail(display = "invalid cookie")]
     InvalidCookie,
     #[fail(display = "unreachable host: {}", host)]
-    UnreachableHost {
-        host: String,
-        err: reqwest::Error,
-    },
+    UnreachableHost { host: String, err: reqwest::Error },
 }
 
 // Probe a miner at the given http endpoint url.
@@ -39,7 +39,14 @@ pub fn probe(host: Host, user: &str, password: &str) -> Result<impl MinerStats, 
 fn probe_req(host: &Host, auth_cookie: &str) -> Result<AntS9Probe, Error> {
     let client = reqwest::Client::new();
     // Send API request to miner
-    let req = client.get(url::Url::parse(format!("http://{}/cgi-bin/luci/admin/status/miner/api_status", host.to_string()).as_str())?)
+    let req = client
+        .get(url::Url::parse(
+            format!(
+                "http://{}/cgi-bin/luci/admin/status/miner/api_status",
+                host.to_string()
+            )
+            .as_str(),
+        )?)
         .header(reqwest::header::COOKIE, auth_cookie);
     let mut res = req.send()?;
     // Parse JSON response into ANTS9Probe struct
@@ -54,23 +61,40 @@ fn authenticate(host: &Host, user: &str, password: &str) -> Result<String, Error
     let client = reqwest::Client::builder()
         .redirect(reqwest::RedirectPolicy::none())
         .build()?;
-    let req = client.post(url::Url::parse(format!("http://{}/cgi-bin/luci", host.to_string()).as_str())?)
-        .form(&params).header(reqwest::header::CONTENT_LENGTH, 40);
+    let req = client
+        .post(url::Url::parse(
+            format!("http://{}/cgi-bin/luci", host.to_string()).as_str(),
+        )?)
+        .form(&params)
+        .header(reqwest::header::CONTENT_LENGTH, 40);
     // Extract cookie from response
     let cookie = extract_cookie(req, host, user, password)?;
     Ok(cookie)
 }
 
 // Extract cookie from response
-fn extract_cookie(req: reqwest::RequestBuilder, host: &Host, user: &str, password: &str) -> Result<String, ProbeError> {
+fn extract_cookie(
+    req: reqwest::RequestBuilder,
+    host: &Host,
+    user: &str,
+    password: &str,
+) -> Result<String, ProbeError> {
     let response: Result<Response, reqwest::Error> = req.send();
     let result = response
         .or_else(|e: reqwest::Error| {
-            Err(ProbeError::UnreachableHost { host: host.to_string(), err: e })
+            Err(ProbeError::UnreachableHost {
+                host: host.to_string(),
+                err: e,
+            })
         })
         .and_then(|res: Response| {
-            res.headers().get(SET_COOKIE)
-                .ok_or(ProbeError::InvalidCredentials { host: host.to_string(), username: user.to_string(), password: password.to_string() })
+            res.headers()
+                .get(SET_COOKIE)
+                .ok_or(ProbeError::InvalidCredentials {
+                    host: host.to_string(),
+                    username: user.to_string(),
+                    password: password.to_string(),
+                })
                 .and_then(|header_value| {
                     // Get cookie from header
                     let cookies: String = header_value.to_str().unwrap().to_string();

@@ -29,14 +29,17 @@ fn index() -> &'static str {
 
 fn main() {
     let before = Instant::now();
-    let res = probe(Host::parse("192.168.1.95").unwrap(), "root", "paplant").expect("Failed to probe");
+    let res =
+        probe(Host::parse("192.168.1.95").unwrap(), "root", "paplant").expect("Failed to probe");
     let duration: Duration = Instant::now().duration_since(before);
     println!("Time taken: {:?}ms", duration.as_millis());
     println!("{:#?}", res.hash_rate());
     rocket::ignite()
         .attach(DbConn::fairing())
         .mount("/", routes![index])
-        .mount("/miner", routes![
+        .mount(
+            "/miner",
+            routes![
                 backend::api::miner::create,
                 backend::api::miner::read,
                 backend::api::miner::update,

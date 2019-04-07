@@ -7,12 +7,12 @@ File for miner api:
 - Fan speed (%)
 - Temperature(s)
 */
-use diesel::query_dsl::{RunQueryDsl, QueryDsl};
+use diesel::query_dsl::{QueryDsl, RunQueryDsl};
 use rocket_contrib::json::Json;
 use serde::{Deserialize, Serialize};
 
-use crate::DbConn;
 use crate::schema::miners;
+use crate::DbConn;
 
 #[derive(Serialize, Deserialize, Queryable, Debug, Clone)]
 pub struct Miner {
@@ -33,7 +33,12 @@ pub struct NewMiner {
 #[post("/", data = "<miner>")]
 pub fn create(miner: Json<NewMiner>, conn: DbConn) -> Json<bool> {
     use crate::schema::miners::dsl::miners;
-    Json(diesel::insert_into(miners).values(&*miner).execute(&*conn).is_ok())
+    Json(
+        diesel::insert_into(miners)
+            .values(&*miner)
+            .execute(&*conn)
+            .is_ok(),
+    )
 }
 
 #[get("/")]
@@ -46,12 +51,15 @@ pub fn read(conn: DbConn) -> Json<Vec<Miner>> {
 #[put("/<id>", data = "<miner>")]
 pub fn update(id: i32, miner: Json<NewMiner>, conn: DbConn) -> Json<Miner> {
     use crate::schema::miners::dsl::miners;
-    diesel::update(miners.find(id)).set(&*miner).execute(&*conn).expect("Failed to update miner");
+    diesel::update(miners.find(id))
+        .set(&*miner)
+        .execute(&*conn)
+        .expect("Failed to update miner");
     Json(Miner {
         id,
         host: miner.clone().host,
         username: miner.clone().username,
-        password: miner.clone().password
+        password: miner.clone().password,
     })
 }
 
