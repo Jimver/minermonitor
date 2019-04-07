@@ -5,17 +5,24 @@ use crate::backend::probe::probe_result::AntS9Probe;
 use crate::backend::probe::probe_extractor::AntS9;
 
 use failure::{Error, Fail};
+use reqwest::Response;
 
 // Custom error for authentication
 #[derive(Fail, Debug)]
 enum ProbeError {
-    #[fail(display = "invalid credentials: {}, {}", username, password)]
+    #[fail(display = "invalid credentials for {}: username: {}, password: {}", host, username, password)]
     InvalidCredentials {
+        host: String,
         username: String,
-        password: String
+        password: String,
     },
     #[fail(display = "invalid cookie")]
-    InvalidCookie
+    InvalidCookie,
+    #[fail(display = "unreachable host: {}", host)]
+    UnreachableHost {
+        host: String,
+        err: reqwest::Error,
+    },
 }
 
 // Probe a miner at the given http endpoint url.
@@ -48,27 +55,32 @@ fn authenticate(host: &Host, user: &str, password: &str) -> Result<String, Error
         .build()?;
     let req = client.post(url::Url::parse(format!("http://{}/cgi-bin/luci", host.to_string()).as_str())?)
         .form(&params).header(reqwest::header::CONTENT_LENGTH, 40);
-    let res = req.send()?;
     // Extract cookie from response
-    let cookie = extract_cookie(res, user, password)?;
+    let cookie = extract_cookie(req, host, user, password)?;
     Ok(cookie)
 }
 
 // Extract cookie from response
-fn extract_cookie(res: reqwest::Response, user: &str, password: &str) -> Result<String, ProbeError> {
-    match res.headers().get(SET_COOKIE) {
-        Some(v) => {
-            // Get cookie from header
-            let cookies: String = v.to_str().unwrap().to_string();
-            // Strip off unnecessary info
-            let split: Vec<&str> = cookies.split(";").collect();
-            let cookie = split.get(0);
-            // If there is no first array element the cookie string must have been malformed
-            match cookie {
-                Some(v) => Ok(v.parse().unwrap()),
-                None => Err(ProbeError::InvalidCookie)
-            }
-        },
-        None => Err(ProbeError::InvalidCredentials { username: user.to_string(), password: password.to_string() })
-    }
+fn extract_cookie(req: reqwest::RequestBuilder, host: &Host, user: &str, password: &str) -> Result<String, ProbeError> {
+    let response: Result<Response, reqwest::Error> = req.send();
+    let result = response
+        .or_else(|e: reqwest::Error| {
+            Err(ProbeError::UnreachableHost { host: host.to_string(), err: e })
+        })
+        .and_then(|res: Response| {
+            res.headers().get(SET_COOKIE)
+                .ok_or(ProbeError::InvalidCredentials { host: host.to_string(), username: user.to_string(), password: password.to_string() })
+                .and_then(|header_value| {
+                    // Get cookie from header
+                    let cookies: String = header_value.to_str().unwrap().to_string();
+                    // Strip off unnecessary info
+                    let split: Vec<&str> = cookies.split(";").collect();
+                    let cookie = split.get(0);
+                    // If there is no first array element the cookie string must have been malformed
+                    cookie
+                        .ok_or(ProbeError::InvalidCookie)
+                        .and_then(|first| Ok(first.parse().unwrap()))
+                })
+        });
+    result
 }
