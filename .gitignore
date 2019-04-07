@@ -1,6 +1,6 @@
 /target
 **/*.rs.bk
-/.idea/**
+/.idea/*
 *.sqlite
 *.env
-!/.idea/runConfigurations/*
+!/.idea/runConfigurations/
