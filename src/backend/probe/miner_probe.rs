@@ -1,11 +1,11 @@
-use url::Host;
-use reqwest::header::SET_COOKIE;
-use crate::backend::api::miner::Miner;
-use crate::backend::probe::probe_result::AntS9Probe;
-use crate::backend::probe::probe_extractor::AntS9;
-
 use failure::{Error, Fail};
+use reqwest::header::SET_COOKIE;
 use reqwest::Response;
+use url::Host;
+
+use crate::backend::api::miner::Miner;
+use crate::backend::probe::probe_extractor::AntS9;
+use crate::backend::probe::probe_result::AntS9Probe;
 
 // Custom error for authentication
 #[derive(Fail, Debug)]
@@ -38,6 +38,7 @@ pub fn probe(host: Host, user: &str, password: &str) -> Result<impl Miner, Error
 // Make http request to the miner with an authentication cookie
 fn probe_req(host: &Host, auth_cookie: &str) -> Result<AntS9Probe, Error> {
     let client = reqwest::Client::new();
+    // Send API request to miner
     let req = client.get(url::Url::parse(format!("http://{}/cgi-bin/luci/admin/status/miner/api_status", host.to_string()).as_str())?)
         .header(reqwest::header::COOKIE, auth_cookie);
     let mut res = req.send()?;
