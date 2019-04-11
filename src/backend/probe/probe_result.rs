@@ -11,8 +11,8 @@ pub fn deserialize_string(string: String) -> AntS9Probe {
 }
 
 pub fn deserialize_reader<R>(reader: R) -> Result<AntS9Probe, Error>
-where
-    R: io::Read,
+    where
+        R: io::Read,
 {
     serde_json::from_reader(reader)
 }

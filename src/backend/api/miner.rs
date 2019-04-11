@@ -8,13 +8,13 @@ File for miner api:
 - Temperature(s)
 */
 use diesel::query_dsl::{QueryDsl, RunQueryDsl};
+use rocket::State;
 use rocket_contrib::json::Json;
 use serde::{Deserialize, Serialize};
 
-use crate::schema::miners;
-use crate::{DbConn, CookieStoreState};
+use crate::{CookieStoreState, DbConn};
 use crate::backend::probe::cookie_store::CookieStore;
-use rocket::State;
+use crate::schema::miners;
 
 #[derive(Serialize, Deserialize, Queryable, Debug, Clone)]
 pub struct Miner {

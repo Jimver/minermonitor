@@ -3,7 +3,7 @@ Extract useful info from the probe result of a miner.
 */
 
 use crate::backend;
-use crate::backend::probe::probe_result::{get_long_stats, AntS9Probe, StatsLong};
+use crate::backend::probe::probe_result::{AntS9Probe, get_long_stats, StatsLong};
 
 pub struct AntS9 {
     hash_rate: f64,

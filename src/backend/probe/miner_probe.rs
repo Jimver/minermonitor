@@ -4,16 +4,16 @@ use reqwest::Response;
 use url::Host;
 
 use crate::backend::api::miner::MinerStats;
+use crate::backend::probe::cookie_store::CookieStore;
 use crate::backend::probe::probe_extractor::AntS9;
 use crate::backend::probe::probe_result::AntS9Probe;
-use crate::backend::probe::cookie_store::CookieStore;
 
 // Custom error for authentication
 #[derive(Fail, Debug)]
 enum ProbeError {
     #[fail(
-        display = "invalid credentials for {}: username: {}, password: {}",
-        host, username, password
+    display = "invalid credentials for {}: username: {}, password: {}",
+    host, username, password
     )]
     InvalidCredentials {
         host: String,
@@ -29,7 +29,7 @@ enum ProbeError {
 // Probe a miner at the given http endpoint url.
 pub fn probe(cookie_store: &CookieStore, host: Host, user: &str, password: &str) -> Result<impl MinerStats, Error> {
     // Authenticate
-    let auth_cookie: String = authenticate(cookie_store,&host, user, password)?;
+    let auth_cookie: String = authenticate(cookie_store, &host, user, password)?;
     // Make API request for status
     let http_response = probe_req(cookie_store, &host, &auth_cookie)?;
     // Get useful information and return it
@@ -46,7 +46,7 @@ fn probe_req(cookie_store: &CookieStore, host: &Host, auth_cookie: &str) -> Resu
                 "http://{}/cgi-bin/luci/admin/status/miner/api_status",
                 host.to_string()
             )
-            .as_str(),
+                .as_str(),
         )?)
         .header(reqwest::header::COOKIE, auth_cookie);
     let mut res = req.send()?;

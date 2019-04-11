@@ -1,6 +1,7 @@
 use std::collections::HashMap;
+
+use rocket::{Data, Request, Response};
 use rocket::fairing::{Fairing, Info, Kind};
-use rocket::{Request, Data, Response};
 
 pub struct CookieStore {
     // Map to store the cookies in according to miner ID.
