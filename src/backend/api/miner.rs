@@ -12,7 +12,9 @@ use rocket_contrib::json::Json;
 use serde::{Deserialize, Serialize};
 
 use crate::schema::miners;
-use crate::DbConn;
+use crate::{DbConn, CookieStoreState};
+use crate::backend::probe::cookie_store::CookieStore;
+use rocket::State;
 
 #[derive(Serialize, Deserialize, Queryable, Debug, Clone)]
 pub struct Miner {

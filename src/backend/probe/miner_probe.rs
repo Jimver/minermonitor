@@ -6,6 +6,7 @@ use url::Host;
 use crate::backend::api::miner::MinerStats;
 use crate::backend::probe::probe_extractor::AntS9;
 use crate::backend::probe::probe_result::AntS9Probe;
+use crate::backend::probe::cookie_store::CookieStore;
 
 // Custom error for authentication
 #[derive(Fail, Debug)]
@@ -26,17 +27,17 @@ enum ProbeError {
 }
 
 // Probe a miner at the given http endpoint url.
-pub fn probe(host: Host, user: &str, password: &str) -> Result<impl MinerStats, Error> {
+pub fn probe(cookie_store: &CookieStore, host: Host, user: &str, password: &str) -> Result<impl MinerStats, Error> {
     // Authenticate
-    let auth_cookie: String = authenticate(&host, user, password)?;
+    let auth_cookie: String = authenticate(cookie_store,&host, user, password)?;
     // Make API request for status
-    let http_response = probe_req(&host, &auth_cookie)?;
+    let http_response = probe_req(cookie_store, &host, &auth_cookie)?;
     // Get useful information and return it
     Ok(AntS9::from(http_response))
 }
 
 // Make http request to the miner with an authentication cookie
-fn probe_req(host: &Host, auth_cookie: &str) -> Result<AntS9Probe, Error> {
+fn probe_req(cookie_store: &CookieStore, host: &Host, auth_cookie: &str) -> Result<AntS9Probe, Error> {
     let client = reqwest::Client::new();
     // Send API request to miner
     let req = client
@@ -55,7 +56,7 @@ fn probe_req(host: &Host, auth_cookie: &str) -> Result<AntS9Probe, Error> {
 }
 
 // Authenticate against miner
-fn authenticate(host: &Host, user: &str, password: &str) -> Result<String, Error> {
+fn authenticate(cookie_store: &CookieStore, host: &Host, user: &str, password: &str) -> Result<String, Error> {
     // braiins OS username password credentials
     let params = [("luci_username", user), ("luci_password", password)];
     let client = reqwest::Client::builder()
