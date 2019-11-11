@@ -1,2 +1,2 @@
 # minermonitor
-miner monitor
+Miner monitor for Antminer S9 miners
